@@ -16,6 +16,7 @@ import org.json.JSONObject;
 import java.util.concurrent.ExecutionException;
 
 import app.antorcha.antorcha.librerias.BaseDatos;
+import app.antorcha.antorcha.librerias.LoginAPI;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -24,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText pass;
 
     BaseDatos bbdd = new BaseDatos();
-
+    LoginAPI loginAPI = new LoginAPI();
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,6 +45,8 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+             String response = loginAPI.execute("usuario/pass").get();
+             
 
             /*String response = bbdd.execute("http://188.166.81.174:5000/cliente").get();
 
@@ -51,11 +54,6 @@ public class MainActivity extends AppCompatActivity {
             JSONObject jsonObject = jsonArray.getJSONObject(1);
 
             String User = jsonObject.getString("User");*/
-
-
-
-
-
 
     }
 
