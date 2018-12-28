@@ -3,7 +3,7 @@ Routes and views for the flask application.
 """
 
 from datetime import datetime
-
+import pprint
 from flask import request, jsonify
 from flask import *
 
@@ -44,10 +44,28 @@ def nuevoProducto():
     res = request.get_json()
     cur = db.cursor()
     print(res["Name"])
-    strin = "INSERT INTO PRODUCTOS ( Name, Stock, Cantidad, Precio, Imagen) VALUES (?,?,?,?,?)"
-    values = (res["Name"],str(res["Stock"]),str(res["Cantidad"]),str(res["Precio"]),"a")
+    strin = "INSERT INTO PRODUCTOS ( Name, Stock, Cantidad, Precio, Imagen) VALUES (%s, %s, %s, %s, %s)"
+    values = (res["Name"],res["Stock"],res["Cantidad"],res["Precio"],'a')
     cur.execute(strin,values)
-    return res
+    db.commit()
+    return json.dumps(res)
+
+@app.route('/nuevoCliente', methods = ['POST'])
+def nuevoCliente():
+    res = request.get_json()
+    cur = db.cursor()
+    print(res["Name"])
+    
+    strin = "INSERT INTO PRODUCTOS (ID_cliente, User,  Pass, Domicilio, Correo, Telefono) VALUES (%s, %s, %s, %s, %s, %s)"
+    values = (res["ID_cliente"],res["User"],res["Pass"],res["Domicilio"],res["Correo"],res["Telefono"])
+    cur.execute(strin,values)
+    db.commit()
+    return json.dumps(res)
+
+@app.route('/nuevoCliente', methods = ['POST'])
+def login():
+    res = request.get_json()
+    cur = db.cursor()
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0')
