@@ -6,13 +6,18 @@ from datetime import datetime
 import pprint
 from flask import request, jsonify
 from flask import *
-
+import csv
+import json
 import MySQLdb
+
+
 app = Flask(__name__)
+
 db = MySQLdb.connect(host="localhost",    
                      user="apiRest",        
                      passwd="patata123",  
                      db="Antorcha")      
+
 
 cur = db.cursor()
 
@@ -56,16 +61,28 @@ def nuevoCliente():
     cur = db.cursor()
     print(res["Name"])
     
-    strin = "INSERT INTO PRODUCTOS (ID_cliente, User,  Pass, Domicilio, Correo, Telefono) VALUES (%s, %s, %s, %s, %s, %s)"
+    strin = "INSERT INTO Cliente (ID_cliente, User,  Pass, Domicilio, Correo, Telefono) VALUES (%s, %s, %s, %s, %s, %s)"
     values = (res["ID_cliente"],res["User"],res["Pass"],res["Domicilio"],res["Correo"],res["Telefono"])
     cur.execute(strin,values)
     db.commit()
     return json.dumps(res)
 
-@app.route('/nuevoCliente', methods = ['POST'])
+@app.route('/login', methods = ['POST'])
 def login():
-    res = request.get_json()
+    ret = request.get_json()
     cur = db.cursor()
+    strin = ("SELECT ID_cliente, User, Domicilio, Correo, Telefono FROM Cliente WHERE User = '"+ ret["User"]+"'")
+    cur.execute(strin)
+    return json.dumps(ret)
+
+@app.route('/addcsv',methods =['POST'])
+def añadircsv():
+    ret = StringIO(request.data)
+    jsonfile = open('file.json', 'w')
+    fieldnames = ("Name","Precio","Origen")
+    reader = csv.DictReader(ret, fieldnames)
+    out = json.dumps( [ row for row in reader ] )
+    return out
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0')
