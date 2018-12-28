@@ -1,27 +1,14 @@
 package app.antorcha.antorcha;
 
 
-import android.content.Context;
-import android.content.Intent;
-import android.graphics.drawable.Drawable;
-import android.media.Image;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
+
 import android.view.View;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
+
 import android.widget.TextView;
-import android.widget.Toast;
 
-import org.w3c.dom.Text;
-
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.concurrent.ExecutionException;
 
 import app.antorcha.antorcha.librerias.BaseDatos;
 
@@ -41,9 +28,20 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void pulsar (View v){
-        String res = bbdd.doInBackground();
-        Log.d("HOLAAAAAAA", res);
-        texto.setText("HOLA");
+
+        try {
+
+            String response = bbdd.execute("http://188.166.81.174:5000/cliente").get();
+
+            texto.setText(response);
+
+
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
 
     }
 
