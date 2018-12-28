@@ -6,7 +6,12 @@ import android.os.Bundle;
 
 import android.view.View;
 
-import android.widget.TextView;
+import android.widget.EditText;
+
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.concurrent.ExecutionException;
 
@@ -14,14 +19,19 @@ import app.antorcha.antorcha.librerias.BaseDatos;
 
 
 public class MainActivity extends AppCompatActivity {
-    private TextView texto;
+
+    private EditText user;
+    private EditText pass;
+
     BaseDatos bbdd = new BaseDatos();
-    @Override
+
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        texto =  findViewById(R.id.textView);
+      user = (EditText) findViewById(R.id.User);
+      pass = (EditText) findViewById(R.id.Pass);
 
     }
 
@@ -29,18 +39,22 @@ public class MainActivity extends AppCompatActivity {
 
     public void pulsar (View v){
 
-        try {
-
-            String response = bbdd.execute("http://188.166.81.174:5000/cliente").get();
-
-            texto.setText(response);
 
 
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+
+
+
+
+            /*String response = bbdd.execute("http://188.166.81.174:5000/cliente").get();
+
+            JSONArray jsonArray = new JSONArray(response);
+            JSONObject jsonObject = jsonArray.getJSONObject(1);
+
+            String User = jsonObject.getString("User");*/
+
+
+
+
 
 
     }
