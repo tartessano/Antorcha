@@ -9,7 +9,7 @@ from flask import *
 import csv
 import json
 import MySQLdb
-
+from io import StringIO
 
 app = Flask(__name__)
 
@@ -71,9 +71,14 @@ def nuevoCliente():
 def login():
     ret = request.get_json()
     cur = db.cursor()
-    strin = ("SELECT ID_cliente, User, Domicilio, Correo, Telefono FROM Cliente WHERE User = '"+ ret["User"]+"'")
+    strin = ("SELECT ID_cliente, User, Domicilio, Correo, Telefono FROM Cliente WHERE User = '"+ ret["User"]+"'AND Pass = '"+ret["Pass"]+"'")
     cur.execute(strin)
-    return json.dumps(ret)
+    row_headers=[x[0] for x in cur.description] #this will extract row headers
+    rv = cur.fetchall()
+    json_data=[]
+    for result in rv:
+        json_data.append(dict(zip(row_headers,result)))
+    return json.dumps(json_data)
 
 @app.route('/addcsv',methods =['POST'])
 def añadircsv():
@@ -82,7 +87,30 @@ def añadircsv():
     fieldnames = ("Name","Precio","Origen")
     reader = csv.DictReader(ret, fieldnames)
     out = json.dumps( [ row for row in reader ] )
+    strin = "INSERT INTO PRODUCTOS ( Name, Stock, Cantidad, Precio, Imagen) VALUES (%s, %s, %s, %s, %s)"
+    values = (res["Name"],res["Stock"],res["Cantidad"],res["Precio"],'a')
+    cur.execute(strin,values)
     return out
+
+@app.route('/test', methods = ['POST'])
+def Test():
+    print(str(request.data))
+    ret = StringIO(str(request.data))
+    jsonfile = open('file.json', 'w')
+    fieldnames = ("Name","Precio","Origen")
+    reader = csv.DictReader(ret, fieldnames)
+    rett = json.dumps( [ row for row in reader ] )
+    strin = "INSERT INTO PRODUCTOS ( Name, Stock, Cantidad, Precio, Imagen) VALUES (%s, %s, %s, %s, %s)"
+    res= json.loads(rett)
+    for i in range(len(res)):
+        values = (res[i]["Name"],10,10,res[i]["Precio"],'a')
+        cur.execute(strin,values)
+    cur.execute('''SELECT * FROM PRODUCTOS''')
+    rv = cur.fetchall()
+    json_data=[]
+    for result in rv:
+        json_data.append(dict(zip(row_headers,result)))
+    return json.dumps(json_data) 
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0')
