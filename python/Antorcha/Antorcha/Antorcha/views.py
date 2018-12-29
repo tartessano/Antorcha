@@ -14,7 +14,7 @@ from io import StringIO
 app = Flask(__name__)
 
 db = MySQLdb.connect(host="localhost",    
-                     user="apiRest",        
+                     user="root",        
                      passwd="patata123",  
                      db="Antorcha")      
 
@@ -36,7 +36,7 @@ def cliente():
 @app.route('/productos', methods = ['GET'])  #proporciona los productos disponibles para el pedido
 def pruductos():
     cur = db.cursor()
-    cur.execute('''SELECT * FROM PRODUCTOS WHERE stock >= 1 ''')
+    cur.execute('''SELECT * FROM Producto WHERE stock >= 1 ''')
     row_headers=[x[0] for x in cur.description] #this will extract row headers
     rv = cur.fetchall()
     json_data=[]
@@ -49,7 +49,7 @@ def nuevoProducto():
     res = request.get_json()
     cur = db.cursor()
     print(res["Name"])
-    strin = "INSERT INTO PRODUCTOS ( Name, Stock, Cantidad, Precio, Imagen) VALUES (%s, %s, %s, %s, %s)"
+    strin = "INSERT INTO Producto ( Name, Stock, Cantidad, Precio, Imagen) VALUES (%s, %s, %s, %s, %s)"
     values = (res["Name"],res["Stock"],res["Cantidad"],res["Precio"],'a')
     cur.execute(strin,values)
     db.commit()
@@ -78,6 +78,7 @@ def login():
     json_data=[]
     for result in rv:
         json_data.append(dict(zip(row_headers,result)))
+    print(json.dumps(json_data))
     return json.dumps(json_data)
 
 @app.route('/addcsv',methods =['POST'])
@@ -100,7 +101,7 @@ def Test():
     fieldnames = ("Name","Precio","Origen")
     reader = csv.DictReader(ret, fieldnames)
     rett = json.dumps( [ row for row in reader ] )
-    strin = "INSERT INTO PRODUCTOS ( Name, Stock, Cantidad, Precio, Imagen) VALUES (%s, %s, %s, %s, %s)"
+    strin = "INSERT INTO Producto ( Name, Stock, Cantidad, Precio, Imagen) VALUES (%s, %s, %s, %s, %s)"
     res= json.loads(rett)
     for i in range(len(res)):
         values = (res[i]["Name"],10,10,res[i]["Precio"],'a')
