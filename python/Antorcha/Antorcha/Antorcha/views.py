@@ -60,7 +60,7 @@ def nuevoCliente():
     res = request.get_json()
     cur = db.cursor()    
     strin = "INSERT INTO Cliente (User,  Pass, Domicilio, Correo, Telefono, Admin) VALUES (%s, %s, %s, %s, %s, %s)"
-    values = (res["User"],res["Pass"],res["Domicilio"],res["Correo"],res["Telefono"], 0)
+    values = (res["User"],res["Pass"]," ",res["Correo"],res["Telefono"], 0)
     cur.execute(strin,values)
     db.commit()
     return json.dumps(res)
@@ -93,15 +93,14 @@ def añadircsv():
 
 @app.route('/test', methods = ['POST'])
 def Test():
-    print(str(request.data))
-    ret = StringIO(str(request.data))
-    fieldnames = ("Name","Precio","Origen")
-    reader = csv.DictReader(ret, fieldnames)
-    rett = json.load( [ row for row in reader ] )
+    print(str(request.data()))
+    stra = str(request.data())
+    stre = stra.split("\n")
+    for i in range(len(stre)):
+        stri = stre[i].split("\t")
     strin = "INSERT INTO Producto (Name, Stock, Cantidad, Precio, Categoria) VALUES (%s, %s, %s, %s, %s)"
-    res= json.dumps(rett)
     for i in range(len(res)):
-        values = (res[i]["Name"],10,10,res[i]["Precio"], "verdura")
+        values = (res[i][1],10,10,res[i][2], "verdura")
         cur.execute(strin,values)
    
     db.commit()
