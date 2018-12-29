@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Antorcha</string>
+    <string name="title_activity_registrarse">Registrarse</string>
 </resources>

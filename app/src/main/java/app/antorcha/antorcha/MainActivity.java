@@ -1,6 +1,7 @@
 package app.antorcha.antorcha;
 
 
+import android.content.Intent;
 import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -8,6 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -40,12 +42,20 @@ public class MainActivity extends AppCompatActivity {
     //Inicializamos las dos entradas de texto user y pass
       user = (EditText) findViewById(R.id.User);
       pass = (EditText) findViewById(R.id.Pass);
-
       textView4 = (TextView) findViewById(R.id.textView4);
 
     }
 
+    public void registrarseActivity(View v){
 
+
+
+        Intent ListSong = new Intent(getApplicationContext(), Register.class);
+                startActivity(ListSong);
+
+
+
+    }
 
     public void pulsar (View v) throws Exception {
 
@@ -85,3 +95,12 @@ public class MainActivity extends AppCompatActivity {
 
 
 }
+
+/* android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true">
+        <activity android:name=".MainActivity">*/
