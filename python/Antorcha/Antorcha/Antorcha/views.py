@@ -58,11 +58,9 @@ def nuevoProducto():
 @app.route('/nuevoCliente', methods = ['POST'])
 def nuevoCliente():
     res = request.get_json()
-    cur = db.cursor()
-    print(res["Name"])
-    
-    strin = "INSERT INTO Cliente (ID_cliente, User,  Pass, Domicilio, Correo, Telefono) VALUES (%s, %s, %s, %s, %s, %s)"
-    values = (res["ID_cliente"],res["User"],res["Pass"],res["Domicilio"],res["Correo"],res["Telefono"])
+    cur = db.cursor()    
+    strin = "INSERT INTO Cliente (User,  Pass, Domicilio, Correo, Telefono, Admin) VALUES (%s, %s, %s, %s, %s, %s)"
+    values = (res["User"],res["Pass"],res["Domicilio"],res["Correo"],res["Telefono"], 0)
     cur.execute(strin,values)
     db.commit()
     return json.dumps(res)
@@ -97,18 +95,20 @@ def añadircsv():
 def Test():
     print(str(request.data))
     ret = StringIO(str(request.data))
-    jsonfile = open('file.json', 'w')
     fieldnames = ("Name","Precio","Origen")
     reader = csv.DictReader(ret, fieldnames)
-    rett = json.dumps( [ row for row in reader ] )
-    strin = "INSERT INTO Producto ( Name, Stock, Cantidad, Precio, Imagen) VALUES (%s, %s, %s, %s, %s)"
-    res= json.loads(rett)
+    rett = json.load( [ row for row in reader ] )
+    strin = "INSERT INTO Producto (Name, Stock, Cantidad, Precio, Categoria) VALUES (%s, %s, %s, %s, %s)"
+    res= json.dumps(rett)
     for i in range(len(res)):
-        values = (res[i]["Name"],10,10,res[i]["Precio"],'a')
+        values = (res[i]["Name"],10,10,res[i]["Precio"], "verdura")
         cur.execute(strin,values)
-    cur.execute('''SELECT * FROM PRODUCTOS''')
+   
+    db.commit()
+    cur.execute('''SELECT * FROM Producto''')
     rv = cur.fetchall()
     json_data=[]
+    row_headers=[x[0] for x in cur.description] #this will extract row headers
     for result in rv:
         json_data.append(dict(zip(row_headers,result)))
     return json.dumps(json_data) 
