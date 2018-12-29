@@ -59,8 +59,8 @@ def nuevoProducto():
 def nuevoCliente():
     res = request.get_json()
     cur = db.cursor()    
-    strin = "INSERT INTO Cliente (User,  Pass, Domicilio, Correo, Telefono, Admin) VALUES (%s, %s, %s, %s, %s, %s)"
-    values = (res["User"],res["Pass"]," ",res["Correo"],res["Telefono"], 0)
+    strin = "INSERT INTO Cliente (User, Domicilio, Correo, Telefono, Admin) VALUES (%s, %s, %s, %s, %s)"
+    values = (res["User"]," ",res["Correo"],res["Telefono"], 0)
     cur.execute(strin,values)
     db.commit()
     return json.dumps(res)
@@ -79,30 +79,18 @@ def login():
     print(json.dumps(json_data))
     return json.dumps(json_data)
 
-@app.route('/addcsv',methods =['POST'])
-def añadircsv():
-    ret = StringIO(request.data)
-    jsonfile = open('file.json', 'w')
-    fieldnames = ("Name","Precio","Origen")
-    reader = csv.DictReader(ret, fieldnames)
-    out = json.dumps( [ row for row in reader ] )
-    strin = "INSERT INTO PRODUCTOS ( Name, Stock, Cantidad, Precio, Imagen) VALUES (%s, %s, %s, %s, %s)"
-    values = (res["Name"],res["Stock"],res["Cantidad"],res["Precio"],'a')
-    cur.execute(strin,values)
-    return out
-
-@app.route('/test', methods = ['POST'])
-def Test():
-    print(str(request.data()))
-    stra = str(request.data())
-    stre = stra.split("\n")
-    for i in range(len(stre)):
-        stri = stre[i].split("\t")
+@app.route('/addtsv',methods =['POST'])
+def añadirtsv():
+    stra = request.data.decode()
+    print(stra)
+    stre = stra.splitlines()
+    print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+    print(stre[1])
+    stri =[stre[i].split('''\t''') for i in range(len(stre))]
     strin = "INSERT INTO Producto (Name, Stock, Cantidad, Precio, Categoria) VALUES (%s, %s, %s, %s, %s)"
-    for i in range(len(res)):
-        values = (res[i][1],10,10,res[i][2], "verdura")
+    for i in range(len(stri)):
+        values = (str(stri[i][0]),10,10,str(stri[i][1]), "verdura")
         cur.execute(strin,values)
-   
     db.commit()
     cur.execute('''SELECT * FROM Producto''')
     rv = cur.fetchall()
@@ -111,6 +99,12 @@ def Test():
     for result in rv:
         json_data.append(dict(zip(row_headers,result)))
     return json.dumps(json_data) 
+
+@app.route('')
+@app.route('/test', methods = ['POST'])
+def Test():
+    
+    return "aaaaaa"
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0')
