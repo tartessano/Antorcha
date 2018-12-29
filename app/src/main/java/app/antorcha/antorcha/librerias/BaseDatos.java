@@ -32,6 +32,7 @@ public class BaseDatos extends AsyncTask<String, String, String> {
             int code = httpURLConnection.getResponseCode();
 
             if (code == HttpURLConnection.HTTP_OK) {
+
                 InputStream in = new BufferedInputStream(httpURLConnection.getInputStream());
                 BufferedReader reader = new BufferedReader(new InputStreamReader(in));
                 String line = "";
