@@ -13,7 +13,7 @@ itsdangerous==1.1.0
 Jinja2==2.10
 MarkupSafe==1.1.0
 mysql-connector-python==8.0.13
-pip==18.1
+pip==19.2
 pprint==0.1
 protobuf==3.6.1
 pycparser==2.19
